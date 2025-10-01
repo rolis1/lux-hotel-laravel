@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card mt-5">
                 <div class="card-header">{{ __('Dashboard Receptionis') }}</div>
 
                 <div class="card-body">

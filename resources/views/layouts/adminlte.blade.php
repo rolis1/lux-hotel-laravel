@@ -34,6 +34,28 @@
 <!-- summernote -->
 <link rel="stylesheet" href="{{ asset('adminlte/plugins/summernote/summernote-bs4.min.css')}}">
 
+<!-- Additional CSS for dashboard -->
+<style>
+    .small-box {
+        border-radius: 0.5rem;
+        box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+        transition: transform 0.3s;
+    }
+    .small-box:hover {
+        transform: translateY(-5px);
+    }
+    .card {
+        border-radius: 0.5rem;
+        box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+    }
+    .quick-action-btn {
+        transition: all 0.3s;
+    }
+    .quick-action-btn:hover {
+        transform: scale(1.05);
+    }
+</style>
+
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -52,7 +74,19 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
-
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Dashboard</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
 
