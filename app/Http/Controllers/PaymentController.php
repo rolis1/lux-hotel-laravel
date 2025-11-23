@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Auth;
 use PDF;
+use App\Models\Activity;
 
 class PaymentController extends Controller
 {
@@ -186,26 +187,32 @@ class PaymentController extends Controller
         $payments = Payment::whereIn('id', $paymentsId)->get();
         // $pay = Payment::find($request->payment_id);
         foreach ($payments as $val) {
-            $val->update(['bukti' => $imgName]);
-            // dd($pay);
-            $data = Transaction::find($val->transaction_id);
-            // dd($data);
-            $data->update(['status' => 'process']);
+    $val->update(['bukti' => $imgName]);
+    $data = Transaction::find($val->transaction_id);
+    $data->update(['status' => 'process']);
 
-            $logpay = date('YmdHis') . '_customer_pay_transaction';
-            Log::create([
-                'transaction_id' => $data->id,
-                'log' => $logpay,
-                'executor_id' => Auth::user()->id,
-            ]);
+    $logpay = date('YmdHis') . '_customer_pay_transaction';
+    Log::create([
+        'transaction_id' => $data->id,
+        'log' => $logpay,
+        'executor_id' => Auth::user()->id,
+    ]);
 
-            $log = date('YmdHis') . '_receptionist_toProcess_order';
-            Log::create([
-                'transaction_id' => $data->id,
-                'log' => $log,
-                'executor_id' => Auth::user()->id,
-            ]);
-        }
+    $log = date('YmdHis') . '_receptionist_toProcess_order';
+    Log::create([
+        'transaction_id' => $data->id,
+        'log' => $log,
+        'executor_id' => Auth::user()->id,
+    ]);
+
+    // 🆕 Tambahkan ini untuk Recent Activities
+    Activity::create([
+        'type' => 'booking',
+        'title' => 'New booking from ' . Auth::user()->name,
+        'description' => 'Transaction #' . $data->id . ' — ' . count(explode(', ', $data->room_id)) . ' room(s) booked.',
+    ]);
+}
+
 
         return redirect()->route('customer.transactions');
     }

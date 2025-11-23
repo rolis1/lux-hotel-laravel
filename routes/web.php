@@ -10,6 +10,7 @@ use App\Http\Controllers\RoomFacilityController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\TransactionController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,14 +22,15 @@ use App\Http\Controllers\TransactionController;
 |
 */
 
-
-Route::group(['middleware' => 'prevent'], function(){
+Route::get('/admin/clear-logs', [HomeController::class, 'clearLogsNow'])->name('admin.clearlogs');
+Route::get('/room-stats', [RoomController::class, 'stats'])->name('room.stats');
+Route::group(['middleware' => 'prevent'], function () {
     Route::get('/', [HomeController::class, 'index'])->name('landing');
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/detail/room/{id}', [RoomTypeController::class, 'detailRoom'])->name('detail.room');
     Auth::routes();
 
-    Route::group(['middleware' => 'auth'], function(){
+    Route::group(['middleware' => 'auth'], function () {
         Route::get('/transactions', [TransactionController::class, 'index'])->name('customer.transactions');
         Route::get('/transaction/cancel/{id}', [TransactionController::class, 'transactionCancel'])->name('customer.cancel.transaction');
         Route::post('/transaction/pay/{id}', [TransactionController::class, 'transactionPay'])->name('customer.pay.transaction');
@@ -39,7 +41,7 @@ Route::group(['middleware' => 'prevent'], function(){
         Route::get('/transaction/proof/{id}', [TransactionController::class, 'transactionProof'])->name('transaction.proof');
         Route::get('/transaction/proof/print/{id}', [PaymentController::class, 'transactionProofPrint'])->name('transaction.proof.print');
 
-        Route::group(['middleware' => 'admin'], function(){
+        Route::group(['middleware' => 'admin'], function () {
 
             Route::get('/admin', [HomeController::class, 'admin'])->name('admin.home');
             Route::get('/admin/logs', [TransactionController::class, 'logs'])->name('admin.logs');
@@ -59,10 +61,9 @@ Route::group(['middleware' => 'prevent'], function(){
             //CRUD FASILITAS HOTEL
             Route::resource('hotelfacility', HotelFacilityController::class)->except('destroy');
             Route::get('/hotelfacility/delete/{id}', [HotelFacilityController::class, 'destroy'])->name('hotelfacility.delete');
-
         });
 
-        Route::group(['middleware' => 'receptionis'], function(){
+        Route::group(['middleware' => 'receptionis'], function () {
             Route::get('/receptionis', [HomeController::class, 'receptionis'])->name('receptionis.home');
             Route::get('/reservations', [TransactionController::class, 'reservations'])->name('receptionis.reservations');
             Route::get('/to_process/{id}', [TransactionController::class, 'toProcessTransaction'])->name('receptionis.toprocess');
@@ -76,9 +77,7 @@ Route::group(['middleware' => 'prevent'], function(){
             Route::get('/checkout/{id}', [TransactionController::class, 'checkOut'])->name('receptionis.checkout');
             Route::get('/checkout-pdata/{id}', [TransactionController::class, 'checkPersonalDataOut'])->name('receptionis.pdata.checkout');
             Route::get('/receptionis/logs', [TransactionController::class, 'logs'])->name('receptionis.logs');
-        Route::post('/receptionis/proof/upload', [PaymentController::class, 'receptionisUploadProof'])->name('receptionis.upload.proof');
-
+            Route::post('/receptionis/proof/upload', [PaymentController::class, 'receptionisUploadProof'])->name('receptionis.upload.proof');
         });
-
     });
 });

@@ -477,14 +477,15 @@
                                         <i class="fas fa-edit mr-1"></i>
                                         Edit
                                     </a>
-                                    <a href="#" class="btn btn-danger btn-sm delete-btn" 
-                                       data-room-id="{{ $data->id }}"
-                                       data-room-number="{{ $data->number }}"
-                                       data-room-type="{{ $data->type_id }}"
-                                       data-room-status="{{ $data->status }}">
-                                        <i class="fas fa-trash mr-1"></i>
-                                        Delete
-                                    </a>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm delete-btn"
+                                            data-room-id="{{ $data->id }}"
+                                            data-room-number="{{ $data->number }}"
+                                            data-room-type="{{ $data->type_id }}"
+                                            data-room-status="{{ $data->status }}">
+                                        <i class="fas fa-trash mr-1"></i> Delete
+                                    </button>
+
                                 </div>
                             </td>
                         </tr>

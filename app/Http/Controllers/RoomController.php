@@ -17,6 +17,7 @@ class RoomController extends Controller
     {
         $datas = Room::all();
         return view('admin.room.index', compact('datas'));
+        
     }
 
     /**
@@ -107,4 +108,17 @@ class RoomController extends Controller
         Room::destroy($id);
         return redirect()->route('room.index');
     }
+
+    public function stats()
+{
+    // Hitung jumlah berdasarkan status
+    $occupied = Room::where('status', 'r')->count();   // Occupied
+    $available = Room::where('status', 'o')->count();  // Available
+    $checkins = Room::where('status', 'os')->count();  // Check-ins
+    $pending = Room::where('status', 'v')->count();    // Pending
+
+    // Kirim ke view
+    return view('admin.room.stats', compact('occupied', 'available', 'checkins', 'pending'));
+}
+
 }

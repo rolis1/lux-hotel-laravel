@@ -416,43 +416,17 @@
                 <p>Fasilitas terbaik untuk mengakomodir kebutuhan anda!</p>
             </div>
             <div class="row mb_30">
-                <div class="col-lg-4 col-md-6">
-                    <div class="facilities_item">
-                        <h4 class="sec_h4"><i class="lnr lnr-dinner"></i>Restaurant & Bar</h4>
-                        <p>Nikmati berbagai hidangan lokal dan internasional di restoran kami yang nyaman dengan pemandangan kolam renang.</p>
+                    @foreach ($hotelFacilities as $item)
+                    <div class="col-lg-4 col-md-6">
+                        <div class="facilities_item">
+                            <h4 class="sec_h4"><i class="lnr lnr-star-empty"></i>{{ $item->facility_name }}</h4>
+                            <p>{{ $item->detail }}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="facilities_item">
-                        <h4 class="sec_h4"><i class="lnr lnr-bicycle"></i>Fitness Center</h4>
-                        <p>Pusat kebugaran lengkap dengan peralatan modern untuk menjaga kesehatan dan kebugaran Anda selama menginap.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="facilities_item">
-                        <h4 class="sec_h4"><i class="lnr lnr-shirt"></i>Swimming Pool</h4>
-                        <p>Kolam renang dengan desain infinity yang menakjubkan, sempurna untuk bersantai setelah seharian beraktivitas.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="facilities_item">
-                        <h4 class="sec_h4"><i class="lnr lnr-car"></i>Pickup & Drop</h4>
-                        <p>Layanan antar jemput bandara tersedia untuk kenyamanan perjalanan Anda menuju dan dari hotel.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="facilities_item">
-                        <h4 class="sec_h4"><i class="lnr lnr-construction"></i>Spa & Wellness</h4>
-                        <p>Temukan ketenangan di spa kami dengan berbagai perawatan tradisional dan modern untuk meremajakan tubuh dan pikiran.</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="facilities_item">
-                        <h4 class="sec_h4"><i class="lnr lnr-coffee-cup"></i>Meeting Rooms</h4>
-                        <p>Fasilitas pertemuan dan konferensi yang lengkap untuk kebutuhan bisnis Anda dengan kapasitas hingga 200 orang.</p>
-                    </div>
-                </div>
-            </div>
+                    @endforeach
+
+
+                </div>
         </div>
     </section>
     <!--================ Facilities Area  =================-->

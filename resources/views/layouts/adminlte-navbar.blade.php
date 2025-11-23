@@ -44,47 +44,6 @@
                     </div>
                 </form>
             </div>
-        </li>
-
-        <!-- Notifications -->
-        <li class="nav-item dropdown notification-item">
-            <a class="nav-link notification-toggle" href="#" role="button" data-toggle="dropdown">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">3</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-header">Notifications</span>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-calendar-check mr-2 text-success"></i>
-                    <div class="dropdown-content">
-                        <div class="dropdown-title">New Booking</div>
-                        <div class="dropdown-text">Room 201 booked by John Doe</div>
-                        <div class="dropdown-time">2 min ago</div>
-                    </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-user-check mr-2 text-info"></i>
-                    <div class="dropdown-content">
-                        <div class="dropdown-title">Check-in</div>
-                        <div class="dropdown-text">Guest checked into Room 305</div>
-                        <div class="dropdown-time">1 hour ago</div>
-                    </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-tools mr-2 text-warning"></i>
-                    <div class="dropdown-content">
-                        <div class="dropdown-title">Maintenance</div>
-                        <div class="dropdown-text">AC issue reported in Room 102</div>
-                        <div class="dropdown-time">3 hours ago</div>
-                    </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-            </div>
-        </li>
 
         <!-- User Menu -->
         <li class="nav-item dropdown user-menu">

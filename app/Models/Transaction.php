@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'room_id',
@@ -22,22 +23,31 @@ class Transaction extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'id', 'transaction_id');
-    }
-
     public function room()
     {
         return $this->belongsTo(Room::class, 'room_id', 'id');
     }
-    public function roomNumber()
-    {
-        return $this->hasOne(Room::class, 'id', 'room_id');
-    }
 
     public function payment()
     {
-        return $this->belongsTo(Payment::class, 'id', 'transaction_id');
+        return $this->hasOne(Payment::class, 'transaction_id', 'id');
+    }
+
+    public function getRoomNumbersAttribute()
+    {
+        if (!$this->room_id) return null;
+        $roomIds = explode(', ', $this->room_id);
+        return \App\Models\Room::whereIn('id', $roomIds)->pluck('number')->implode(', ');
+    }
+
+    public function getRoomTypesAttribute()
+    {
+        if (!$this->room_id) return null;
+        $roomIds = explode(', ', $this->room_id);
+        return \App\Models\Room::whereIn('id', $roomIds)
+            ->with('roomType')
+            ->get()
+            ->pluck('roomType.name')
+            ->implode(', ');
     }
 }

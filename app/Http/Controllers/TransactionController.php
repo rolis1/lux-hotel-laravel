@@ -55,7 +55,7 @@ class TransactionController extends Controller
         // dd($totalMalam);
         if ($request->jumlah != NULL) {
             $jumlahPesanan = $request->jumlah;
-        } else{
+        } else {
             $jumlahPesanan = 1;
         }
         if ($jumlahPesanan > $request->stok) {
@@ -155,15 +155,15 @@ class TransactionController extends Controller
     public function transactionCancel($id)
     {
         $data = Transaction::find($id);
-        $data->update(['status'=>'canceled']);
+        $data->update(['status' => 'canceled']);
 
-        $idKamar = explode(', ',$data->room_id);
+        $idKamar = explode(', ', $data->room_id);
         $dataKamar = Room::whereIn('id', $idKamar)->get();
         foreach ($dataKamar as $val) {
             Room::find($val->id)->update(['status' => 'v']);
         }
 
-        $log = date('YmdHis').'_customer_cancel_order';
+        $log = date('YmdHis') . '_customer_cancel_order';
         Log::create([
             'transaction_id' => $data->id,
             'log' => $log,
@@ -189,27 +189,27 @@ class TransactionController extends Controller
             $pay->url = 'https://link.dana.id';
             $pay->type = 'Dana';
             $pay->nomor = '1234567890';
-        }else if ($request->pay_type == "ovo") {
+        } else if ($request->pay_type == "ovo") {
             $pay->url = 'https://ovo.id';
             $pay->type = 'OVO';
             $pay->nomor = '12345678909';
-        }else if ($request->pay_type == "gopay") {
+        } else if ($request->pay_type == "gopay") {
             $pay->url = 'https://www.gojek.com/gopay/';
             $pay->type = 'Gopay';
             $pay->nomor = '123456767890';
-        }else if ($request->pay_type == "mandiriva") {
+        } else if ($request->pay_type == "mandiriva") {
             $pay->url = 'https://ibank.bankmandiri.co.id';
             $pay->type = 'Mandiri VA';
             $pay->nomor = '1234567890';
-        }else if ($request->pay_type == "briva") {
+        } else if ($request->pay_type == "briva") {
             $pay->url = 'https://bri.co.id';
             $pay->type = 'BRI VA';
             $pay->nomor = '1234567890';
-        }else if ($request->pay_type == "bcava") {
+        } else if ($request->pay_type == "bcava") {
             $pay->url = 'https://bca.co.id';
             $pay->type = 'BCA VA';
             $pay->nomor = '1234567890';
-        }else{
+        } else {
             $pay->url = 'error';
             $pay->type = 'error';
             $pay->nomor = 'error';
@@ -220,8 +220,8 @@ class TransactionController extends Controller
     public function reservations()
     {
         $datas = Transaction::select("*")
-                            ->orderBy("created_at", "desc")
-                            ->get();;
+            ->orderBy("created_at", "desc")
+            ->get();;
         return view('receptionis.reservations', compact('datas'));
     }
 
@@ -229,7 +229,7 @@ class TransactionController extends Controller
     {
 
         $data = Transaction::find($id);
-        $data->update(['status'=>'process']);
+        $data->update(['status' => 'process']);
 
         $logpay = date('YmdHis') . '_customer_pay_transaction';
         Log::create([
@@ -251,7 +251,7 @@ class TransactionController extends Controller
     public function toVerifiedTransaction($id)
     {
         $data = Transaction::find($id);
-        $data->update(['status'=>'verified']);
+        $data->update(['status' => 'verified']);
 
         $log = date('YmdHis') . '_receptionist_toVerified_order';
         Log::create([
@@ -266,7 +266,7 @@ class TransactionController extends Controller
     public function toFailedTransaction($id)
     {
         $data = Transaction::find($id);
-        $data->update(['status'=>'failed']);
+        $data->update(['status' => 'failed']);
 
         $log = date('YmdHis') . '_receptionist_toFailed_order';
         Log::create([
@@ -281,7 +281,7 @@ class TransactionController extends Controller
     public function toRejectedTransaction($id)
     {
         $data = Transaction::find($id);
-        $data->update(['status'=>'rejected']);
+        $data->update(['status' => 'rejected']);
 
         $log = date('YmdHis') . '_receptionist_rejected_order';
         Log::create([
@@ -312,16 +312,35 @@ class TransactionController extends Controller
 
     public function checkIn()
     {
+        // Ambil semua transaksi dengan status tertentu
         $transactions = Transaction::where('status', 'verified')->get();
-        $datas = Transaction::where('status' , 'checked in')->get();
+        $datas = Transaction::where('status', 'checked in')->get();
 
+        // Tambahkan properti room_numbers dan room_types ke setiap transaksi
+        foreach ($datas as $data) {
+            // Pisahkan ID kamar yang mungkin berupa "1, 2, 3"
+            $roomIds = array_map('trim', explode(',', $data->room_id));
 
+            // Ambil semua data kamar yang sesuai
+            $rooms = \App\Models\Room::whereIn('id', $roomIds)
+                ->with('roomType')
+                ->get();
+
+            // Simpan nomor kamar dan nama tipe kamar jadi properti dinamis
+            $data->room_numbers = $rooms->pluck('number')->implode(', ');
+            $data->room_types = $rooms
+                ->map(fn($room) => optional($room->roomType)->name ?? '-')
+                ->unique()
+                ->implode(', ');
+        }
+
+        // Kirim ke view
         return view('receptionis.checkin', compact('transactions', 'datas'));
     }
     public function checkInPersonalData()
     {
         $transactions = Transaction::where('status', 'verified')->get();
-        $datas = Transaction::where('status' , 'checked in')->get();
+        $datas = Transaction::where('status', 'checked in')->get();
 
 
         return view('receptionis.checkin-pdata', compact('transactions', 'datas'));
@@ -331,12 +350,12 @@ class TransactionController extends Controller
 
     public function checkInPost(Request $request)
     {
-        $data = Transaction::where( 'id','=',$request->transaction_id)->where('status', 'verified')->first();
+        $data = Transaction::where('id', '=', $request->transaction_id)->where('status', 'verified')->first();
         if ($data == NULL) {
             return redirect()->back()->with('error', 'Transaction ID is not Valid');
         }
         $data->update(['status' => 'checked in']);
-        $idKamar = explode(', ',$data->room_id);
+        $idKamar = explode(', ', $data->room_id);
         $dataKamar = Room::whereIn('id', $idKamar)->get();
 
         $log = date('YmdHis') . '_receptionist_customer_checkin';
@@ -353,12 +372,12 @@ class TransactionController extends Controller
     }
     public function checkInPersonalDataPost(Request $request)
     {
-        $data = Transaction::where( 'id','=',$request->transaction_id)->where('status', 'verified')->first();
+        $data = Transaction::where('id', '=', $request->transaction_id)->where('status', 'verified')->first();
         if ($data == NULL) {
             return redirect()->back()->with('error', 'Transaction ID is not Valid');
         }
         $data->update(['status' => 'checked in']);
-        $idKamar = explode(', ',$data->room_id);
+        $idKamar = explode(', ', $data->room_id);
         $dataKamar = Room::whereIn('id', $idKamar)->get();
 
         $log = date('YmdHis') . '_receptionist_customer_checkin';
@@ -388,7 +407,7 @@ class TransactionController extends Controller
     {
         $data = Transaction::find($id);
         $data->update(['status' => 'checked out']);
-        $idKamar = explode(', ',$data->room_id);
+        $idKamar = explode(', ', $data->room_id);
         $dataKamar = Room::whereIn('id', $idKamar)->get();
         $log = date('YmdHis') . '_receptionist_customer_checkout';
         foreach ($dataKamar as $val) {
@@ -406,7 +425,7 @@ class TransactionController extends Controller
     {
         $data = Transaction::find($id);
         $data->update(['status' => 'checked out']);
-        $idKamar = explode(', ',$data->room_id);
+        $idKamar = explode(', ', $data->room_id);
         $dataKamar = Room::whereIn('id', $idKamar)->get();
         $log = date('YmdHis') . '_receptionist_customer_checkout';
         foreach ($dataKamar as $val) {
@@ -424,8 +443,8 @@ class TransactionController extends Controller
     public function logs()
     {
         $datas = Log::select("*")
-                            ->orderBy("created_at", "desc")
-                            ->get();;
+            ->orderBy("created_at", "desc")
+            ->get();;
         return view('app.log', compact('datas'));
     }
 }
